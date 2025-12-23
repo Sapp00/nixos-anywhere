@@ -355,31 +355,27 @@ The second flag, <code>./hardware-configuration.nix</code>, specifies where
 reflect the location where you want the <code>hardware-configuration.nix</code> for this
 machine to be saved.</p>
 <h4 id="81-nixos-facter"><a class="header" href="#81-nixos-facter">8.1 nixos-facter</a></h4>
-<p>As an alternative to <code>nixos-generate-config</code>, you can use the experimental
-<a href="https://github.com/numtide/nixos-facter">nixos-facter</a> command, which offers
-more comprehensive hardware reports and advanced configuration options.</p>
-<p>To use <code>nixos-facter</code>, add the following to your flake inputs:</p>
-<pre><code class="language-diff"> {
-+ inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
- }
-</code></pre>
-<p>Next, import the module into your configuration and specify <code>facter.json</code> as the
-path where the hardware report will be saved:</p>
+<p>As an alternative to <code>nixos-generate-config</code>, you can use
+<a href="https://github.com/nix-community/nixos-facter">nixos-facter</a>, which offers more
+comprehensive hardware reports and advanced configuration options. The
+nixos-facter module is included in nixpkgs and automatically configures drivers,
+kernel modules, firmware, and various hardware support based on the detected
+hardware.</p>
+<p>To use <code>nixos-facter</code>, specify <code>facter.json</code> as the path where the hardware
+report will be saved:</p>
 <pre><code class="language-diff"> nixosConfigurations.generic-nixos-facter = nixpkgs.lib.nixosSystem {
    system = "x86_64-linux";
    modules = [
      disko.nixosModules.disko
      ./configuration.nix
-+    nixos-facter-modules.nixosModules.facter
-+    { config.facter.reportPath = ./facter.json }
++    { hardware.facter.reportPath = ./facter.json; }
    ];
  };
 </code></pre>
 <p>To generate the configuration for <code>nixos-facter</code> with <code>nixos-anywhere</code>, use the
 following flags: <code>--generate-hardware-config nixos-facter ./facter.json</code>. The
-second flag, <code>./facter.json</code>, specifies where <code>nixos-generate-config</code> will store
-the hardware report. Adjust this path to suit the location where you want the
-<code>facter.json</code> to be saved.</p>
+second argument, <code>./facter.json</code>, specifies where <code>nixos-facter</code> will store the
+hardware report. Adjust this path to suit your flake layout.</p>
 <h3 id="9-run-it"><a class="header" href="#9-run-it">9. Run it</a></h3>
 <p>You can now run <strong>nixos-anywhere</strong> from the command line as shown below, where:</p>
 <ul>
